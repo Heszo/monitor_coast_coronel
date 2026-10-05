@@ -40,7 +40,7 @@ def ventana(df):
         return df
     pad = pd.Timedelta(hours=13) if marea else pd.Timedelta(0)  # el filtro necesita los bordes
     d = df[(df.index >= t0 - pad) & (df.index <= t1 + pad)]
-    if marea:
+    if marea and not val.es_diario(d):  # GLORYS es diario: ya no tiene marea
         d = val.submareal(d)
     return d[(d.index >= t0) & (d.index <= t1)]
 
