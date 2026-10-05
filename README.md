@@ -63,10 +63,15 @@ Hallazgos de los datos (verificados el 04/10/2026):
 ## Publicación
 
 - Repo público en GitHub; app en Streamlit Community Cloud (archivo principal `streamlit_app.py`, Python 3.13).
-- `.github/workflows/ingesta.yml` corre `ingesta.py` todos los días a las 09:30 UTC (06:30 de Chile) y
-  commitea `data/`; Streamlit se redespliega con el commit. También se lanza a mano (`workflow_dispatch`).
+- `.github/workflows/ingesta.yml`: la **boya cada hora** (minuto 10) y **boya + modelos cada día** a las
+  09:40 UTC (06:40 de Chile). También se lanza a mano (`workflow_dispatch`, con lista de modelos opcional).
+- Los datos viven en la rama **`datos`**, que la Action reescribe con un único commit en cada corrida: el repo
+  no crece y `main` queda solo con código. La app desplegada los lee por HTTP desde
+  `raw.githubusercontent.com/Heszo/monitor_coast_coronel/datos/data` (caché de 10 min), sin redesplegarse;
+  en local, si existe `data/obs.parquet`, usa la carpeta local (`almacen.fuente()`).
 - Secretos del repo: `COPERNICUSMARINE_SERVICE_USERNAME` y `COPERNICUSMARINE_SERVICE_PASSWORD`.
-- La API UdeC guarda solo ~10 días: la Action diaria es la que conserva Tp y la dirección media.
+- La API UdeC guarda solo ~10 días: la corrida horaria es la que conserva Tp y la dirección media.
+- GitHub pausa los cron de un repo sin actividad en 60 días; si pasa, se reactivan desde la pestaña Actions.
 
 ## Licencia
 
@@ -79,7 +84,7 @@ de sus productores (Copernicus Marine, US Navy/HYCOM, NOAA, Open-Meteo con uso n
 catalogo.py        boya, variables y modelos (nombre, color, fuente, salvedades)
 boya.py            CDOM + API UdeC → QC → horario (data/obs_30min.parquet, data/obs.parquet)
 modelos/           extrae (punto en la grilla), cmems, hycom, rtofs, openmeteo
-almacen.py         Parquet en data/ (MONITOR_DATOS para otra carpeta); fusión: lo nuevo pisa
+almacen.py         Parquet en data/ o en la rama `datos` por HTTP; fusión: lo nuevo pisa
 ingesta.py         CLI incremental; estado por fuente en data/_estado.json
 validacion.py      emparejamiento y métricas (escalares, circulares, vectorial de Kundu, vector progresivo)
 comun.py           cargas con caché, encabezado, exportación PNG/PDF
@@ -99,6 +104,6 @@ eran pasado al descargarse.
 2. HYCOM ESPC: el servidor a veces responde «Stale file handle» (pasó varias horas el 04/10/2026); la
    ingesta reintenta y, si falla, conserva lo guardado. Solo guarda ~10 días: la historia se arma día a día.
 3. Validación por **plazo de pronóstico** (guardar cada corrida, no solo la mejor serie).
-4. La Action guarda los Parquet en `main` (un commit diario de ~2 MB): el repo crece ~0,7 GB al año. Si
-   molesta, pasar los datos a una rama `datos` huérfana (un solo commit reescrito) como en Araucanía.
+4. La rama `datos` no guarda historia: si un día una ingesta deja datos malos, no hay vuelta atrás desde git
+   (la siguiente corrida los rehace desde las fuentes, salvo lo que la API UdeC ya borró).
 5. Sumar más boyas (las de `monitor_coast_chile_metgeo`) y modelos regionales cuando haya acceso.

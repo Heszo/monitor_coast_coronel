@@ -1,14 +1,17 @@
-# Ingesta diaria: boya (CDOM + API UdeC) y modelos; commitea data/ en main y Streamlit Cloud se refresca.
+# Ingesta: la boya cada hora (CDOM + API UdeC) y los modelos una vez al día.
+# Los datos se publican en la rama `datos`, reescrita en cada corrida con un único commit (no acumula
+# historia); la app desplegada los lee desde ahí por HTTP, sin redesplegarse.
 # Secretos del repo: COPERNICUSMARINE_SERVICE_USERNAME y COPERNICUSMARINE_SERVICE_PASSWORD.
 name: ingesta
 
 on:
   schedule:
-    - cron: "30 9 * * *"     # 06:30 hora de Chile: GLO12, MFWAM y RTOFS ya publicaron la corrida del día
+    - cron: "10 * * * *"     # cada hora: solo la boya
+    - cron: "40 9 * * *"     # 06:40 de Chile: boya y todos los modelos
   workflow_dispatch:
     inputs:
       modelos:
-        description: "Modelos separados por coma (vacío = todos)"
+        description: "Modelos separados por coma (vacío = todos; 'ninguno' = solo la boya)"
         required: false
         default: ""
 
@@ -30,22 +33,31 @@ jobs:
           python-version: "3.13"
           cache: pip
       - run: pip install -r requirements.txt
+      - name: Traer los datos anteriores (rama datos)
+        run: |
+          git clone --depth 1 -b datos "https://github.com/${{ github.repository }}.git" "$RUNNER_TEMP/prev" \
+            && cp -r "$RUNNER_TEMP/prev/data" . || echo "Sin rama datos: primera carga completa"
       - name: Ingesta
         env:
           COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
           COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUSMARINE_SERVICE_PASSWORD }}
+          MODELOS: ${{ inputs.modelos }}
         run: |
-          if [ -n "${{ inputs.modelos }}" ]; then
-            python ingesta.py --modelos "${{ inputs.modelos }}"
+          if [ "${{ github.event.schedule }}" = "10 * * * *" ] || [ "$MODELOS" = "ninguno" ]; then
+            python ingesta.py --solo-obs
+          elif [ -n "$MODELOS" ]; then
+            python ingesta.py --modelos "$MODELOS"
           else
             python ingesta.py
           fi
-      - name: Commit de los datos
+      - name: Publicar en la rama datos
         run: |
+          pub="$RUNNER_TEMP/pub"
+          rm -rf "$pub" && mkdir -p "$pub" && cp -r data "$pub/" && rm -f "$pub"/data/*.log
+          cd "$pub"
+          git init -q -b datos
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/
-          git diff --cached --quiet && echo "Sin cambios" && exit 0
-          git commit -m "datos: ingesta $(date -u +%Y-%m-%dT%H:%MZ)"
-          git pull --rebase origin main
-          git push
+          git add data
+          git commit -q -m "datos: $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" datos

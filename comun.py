@@ -2,7 +2,7 @@
 Lo que comparten las páginas: cargas con caché, conversión de hora, métricas "ahora" y utilidades de
 gráficos (línea gráfica heredada de MetGeo Araucanía / Costa Chile).
 
-La app solo lee data/ (o MONITOR_DATOS); la ingesta la llena (python ingesta.py).
+La app solo lee: data/ si hay una ingesta local, si no la rama `datos` de GitHub (almacen.fuente()).
 """
 import json
 
@@ -37,25 +37,27 @@ BASES = {k: dict(nombre=n, credito=_RASTER[k][1], estilo="data:application/json,
 
 
 # ------------------------------------------------------------------ cargas con caché
+FUENTE = almacen.fuente()
+
+
 @st.cache_data(ttl="10m", show_spinner="Leyendo la boya…")
 def carga_obs():
-    return almacen.lee("obs.parquet")
+    return almacen.lee("obs.parquet", FUENTE)
 
 
-@st.cache_data(ttl="10m", show_spinner="Leyendo los modelos…")
+@st.cache_data(ttl="30m", show_spinner="Leyendo los modelos…")
 def carga_modelo(modelo):
-    return almacen.lee_modelo(modelo)
+    return almacen.lee_modelo(modelo, FUENTE)
+
+
+@st.cache_data(ttl="30m", show_spinner=False)
+def carga_meta(modelo):
+    return almacen.lee_meta(modelo, FUENTE)
 
 
 @st.cache_data(ttl="10m", show_spinner=False)
-def carga_meta(modelo):
-    return almacen.lee_meta(modelo)
-
-
-@st.cache_data(ttl="5m", show_spinner=False)
 def carga_estado():
-    f = almacen.DATOS / "_estado.json"
-    return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+    return almacen.lee_json("_estado.json", FUENTE)
 
 
 def modelos_de(grupo):

@@ -6,8 +6,8 @@ __pycache__/
 .DS_Store
 *.swp
 
-# Datos: se versionan los Parquet de data/ (los lee Streamlit Cloud), no los logs ni lo pesado
-data/*.log
+# Datos: viven en la rama `datos` (la escribe la Action); en main solo el código
+data/
 salida/
 *.nc
 

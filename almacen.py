@@ -7,26 +7,59 @@ Almacén local en Parquet (carpeta data/, o la de MONITOR_DATOS):
   columna `emitido` (hora de la descarga). Cada ingesta pisa las horas que vuelve a traer, así el
   pasado queda con el análisis más reciente y el futuro con el último pronóstico;
 - modelos/{modelo}.json: cómo se extrajo el punto (método, distancia y celda del modelo).
+
+En GitHub los datos viven en la rama `datos` (la Action la reescribe en cada corrida, sin historia) y
+la app desplegada los lee por HTTP desde REMOTO; en local se usa la carpeta data/. Solo la lectura
+acepta una URL como base.
 """
+import io
 import json
 import os
 from pathlib import Path
 
 import pandas as pd
+import requests
 
 DATOS = Path(os.environ.get("MONITOR_DATOS", Path(__file__).resolve().parent / "data"))
+REMOTO = os.environ.get("MONITOR_DATOS_URL",
+                        "https://raw.githubusercontent.com/Heszo/monitor_coast_coronel/datos/data")
+
+
+def fuente():
+    """Dónde lee la app: data/ si hay una ingesta local, si no la rama `datos` de GitHub."""
+    return DATOS if (DATOS / "obs.parquet").exists() else REMOTO
+
+
+def _es_url(base):
+    return isinstance(base, str) and base.startswith("http")
 
 
 def _ruta(nombre, base=None):
     return Path(base or DATOS) / nombre
 
 
-def lee(nombre, base=None):
+def _bytes(nombre, base):
+    """Contenido de un archivo local o remoto; None si no existe."""
+    if _es_url(base):
+        r = requests.get(f"{base}/{nombre}", timeout=60)
+        if r.status_code == 404:
+            return None
+        r.raise_for_status()
+        return r.content
     f = _ruta(nombre, base)
-    if not f.exists():
+    return f.read_bytes() if f.exists() else None
+
+
+def lee(nombre, base=None):
+    b = _bytes(nombre, base)
+    if b is None:
         return pd.DataFrame()
-    df = pd.read_parquet(f)
-    return df.sort_index()
+    return pd.read_parquet(io.BytesIO(b)).sort_index()
+
+
+def lee_json(nombre, base=None):
+    b = _bytes(nombre, base)
+    return json.loads(b.decode("utf-8")) if b else {}
 
 
 def fusiona(viejo, nuevo):
@@ -50,8 +83,7 @@ def guarda(df, nombre, base=None, fusionar=True):
 
 
 def lee_meta(modelo, base=None):
-    f = _ruta(f"modelos/{modelo}.json", base)
-    return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+    return lee_json(f"modelos/{modelo}.json", base)
 
 
 def guarda_meta(modelo, meta, base=None):
