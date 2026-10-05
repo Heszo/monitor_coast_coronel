@@ -4,6 +4,7 @@ gráficos (línea gráfica heredada de MetGeo Araucanía / Costa Chile).
 
 La app solo lee: data/ si hay una ingesta local, si no la rama `datos` de GitHub (almacen.fuente()).
 """
+import base64
 import json
 
 import numpy as np
@@ -171,15 +172,32 @@ def barra(boton="resetScale2d"):
     return {"displayModeBar": True, "displaylogo": False, "modeBarButtons": [[boton]]}
 
 
+def _logo_uri():
+    """El logo de MetGeo como data URI (Plotly lo incrusta en la imagen y en el PDF)."""
+    return "data:image/png;base64," + base64.b64encode(LOGO_COMPLETO.read_bytes()).decode()
+
+
+ENCABEZADO = 52   # px extra arriba del gráfico exportado para el logo y la fuente
+LOGO_ALTO = 36    # px; el ancho sale de la proporción del archivo (746×180)
+
+
 def exporta(fig, formato, ancho=1400):
-    """El gráfico como PNG (doble resolución) o PDF, con fondo blanco y la fuente arriba (Kaleido)."""
+    """El gráfico como PNG (doble resolución) o PDF, con fondo blanco, el logo de MetGeo arriba a la
+    izquierda y la fuente arriba a la derecha (Kaleido con Chrome; en Streamlit Cloud, el de packages.txt)."""
     f = go.Figure(fig)
-    arriba = (f.layout.margin.t or 0) + 26
-    f.update_layout(template="plotly_white", paper_bgcolor="white", margin=dict(t=arriba))
+    m = f.layout.margin
+    alto = (f.layout.height or 500) + ENCABEZADO
+    t = (m.t or 0) + ENCABEZADO
+    graf_ancho = max(ancho - (m.l or 0) - (m.r or 0), 1)
+    graf_alto = max(alto - t - (m.b or 0), 1)
+    f.update_layout(template="plotly_white", paper_bgcolor="white", margin=dict(t=t))
+    # el logo y la fuente van arriba de todo: sobre el borde superior del área del gráfico, sumando el margen
+    f.add_layout_image(source=_logo_uri(), xref="paper", yref="paper", x=0, y=1 + (t - 8) / graf_alto,
+                       xanchor="left", yanchor="top", sizing="contain", layer="above",
+                       sizex=LOGO_ALTO * 746 / 180 / graf_ancho, sizey=LOGO_ALTO / graf_alto)
     f.add_annotation(text=PIE, xref="paper", yref="paper", x=1, y=1, xanchor="right", yanchor="bottom",
-                     yshift=arriba - 20, showarrow=False, font=dict(size=10, color="#777"))
-    return f.to_image(format=formato, width=ancho, height=(f.layout.height or 500) + 26,
-                      scale=2 if formato == "png" else 1)
+                     yshift=t - 8 - 16, showarrow=False, font=dict(size=10, color="#777"))
+    return f.to_image(format=formato, width=ancho, height=alto, scale=2 if formato == "png" else 1)
 
 
 def grafico(fig, nombre, key=None):
