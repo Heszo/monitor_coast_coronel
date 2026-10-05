@@ -1,0 +1,18 @@
+# Entorno y cachés
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+*.swp
+
+# Datos: se versionan los Parquet de data/ (los lee Streamlit Cloud), no los logs ni lo pesado
+data/*.log
+salida/
+*.nc
+
+# Secretos y configuración local
+.streamlit/secrets.toml
+.claude/settings.local.json
+.env
+*.pem

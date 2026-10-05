@@ -1,0 +1,51 @@
+# Ingesta diaria: boya (CDOM + API UdeC) y modelos; commitea data/ en main y Streamlit Cloud se refresca.
+# Secretos del repo: COPERNICUSMARINE_SERVICE_USERNAME y COPERNICUSMARINE_SERVICE_PASSWORD.
+name: ingesta
+
+on:
+  schedule:
+    - cron: "30 9 * * *"     # 06:30 hora de Chile: GLO12, MFWAM y RTOFS ya publicaron la corrida del día
+  workflow_dispatch:
+    inputs:
+      modelos:
+        description: "Modelos separados por coma (vacío = todos)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ingesta
+  cancel-in-progress: false
+
+jobs:
+  ingesta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Ingesta
+        env:
+          COPERNICUSMARINE_SERVICE_USERNAME: ${{ secrets.COPERNICUSMARINE_SERVICE_USERNAME }}
+          COPERNICUSMARINE_SERVICE_PASSWORD: ${{ secrets.COPERNICUSMARINE_SERVICE_PASSWORD }}
+        run: |
+          if [ -n "${{ inputs.modelos }}" ]; then
+            python ingesta.py --modelos "${{ inputs.modelos }}"
+          else
+            python ingesta.py
+          fi
+      - name: Commit de los datos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet && echo "Sin cambios" && exit 0
+          git commit -m "datos: ingesta $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin main
+          git push

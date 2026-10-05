@@ -1,0 +1,10 @@
+{
+ "metodo": "servidor",
+ "celda": [
+  -37.0,
+  -73.25
+ ],
+ "dataset": "Open-Meteo ecmwf_wam025",
+ "distancia_km": 9.3,
+ "actualizado": "2026-10-05 00:25:32.397517"
+}
