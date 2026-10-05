@@ -10,7 +10,8 @@ Almacén local en Parquet (carpeta data/, o la de MONITOR_DATOS):
 
 En GitHub los datos viven en la rama `datos` (la Action la reescribe en cada corrida, sin historia) y
 la app desplegada los lee por HTTP desde REMOTO; en local se usa la carpeta data/. Solo la lectura
-acepta una URL como base.
+acepta una URL como base. Como el repo es privado, la lectura remota usa el token de
+MONITOR_DATOS_TOKEN (en Streamlit Cloud, un secreto de nivel raíz, que llega como variable de entorno).
 """
 import io
 import json
@@ -23,6 +24,7 @@ import requests
 DATOS = Path(os.environ.get("MONITOR_DATOS", Path(__file__).resolve().parent / "data"))
 REMOTO = os.environ.get("MONITOR_DATOS_URL",
                         "https://raw.githubusercontent.com/Heszo/monitor_coast_coronel/datos/data")
+TOKEN = os.environ.get("MONITOR_DATOS_TOKEN")  # token de GitHub de solo lectura (repo privado)
 
 
 def fuente():
@@ -41,7 +43,8 @@ def _ruta(nombre, base=None):
 def _bytes(nombre, base):
     """Contenido de un archivo local o remoto; None si no existe."""
     if _es_url(base):
-        r = requests.get(f"{base}/{nombre}", timeout=60)
+        headers = {"Authorization": f"token {TOKEN}"} if TOKEN else {}
+        r = requests.get(f"{base}/{nombre}", headers=headers, timeout=60)
         if r.status_code == 404:
             return None
         r.raise_for_status()

@@ -35,7 +35,7 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Traer los datos anteriores (rama datos)
         run: |
-          git clone --depth 1 -b datos "https://github.com/${{ github.repository }}.git" "$RUNNER_TEMP/prev" \
+          git clone --depth 1 -b datos "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$RUNNER_TEMP/prev" \
             && cp -r "$RUNNER_TEMP/prev/data" . || echo "Sin rama datos: primera carga completa"
       - name: Ingesta
         env:
