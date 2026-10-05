@@ -18,7 +18,7 @@ pagina = st.navigation([
 ], position="top")
 
 with st.container(horizontal=True, vertical_alignment="center"):
-    st.title(pagina.title, icon=pagina.icon, anchor=False)
+    st.title("Monitor Coronel" if pagina.title == "Monitor" else pagina.title, icon=pagina.icon, anchor=False)
     C.ajustes()
 C.metricas_ahora()
 st.space("small")
