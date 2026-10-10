@@ -1,0 +1,11 @@
+{
+ "metodo": "vecino_mar",
+ "distancia_km": 4.0,
+ "celda": [
+  -37.0342,
+  -73.2
+ ],
+ "dataset": "rtofs_glo_2ds_*_diag.nc (barotrópica)",
+ "corrida": "2026-10-09 00z",
+ "actualizado": "2026-10-10 15:37:43.817064"
+}

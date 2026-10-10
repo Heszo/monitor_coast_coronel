@@ -1,0 +1,164 @@
+{
+ "modelos": {
+  "glorys": {
+   "ok": true,
+   "filas_nuevas": 3,
+   "filas": 405,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-08-25 00:00:00",
+   "segundos": 7.2,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.0,
+    -73.1667
+   ],
+   "dataset": "cmems_mod_glo_phy_my_0.083deg_P1D-m"
+  },
+  "mfwam": {
+   "ok": true,
+   "filas_nuevas": 116,
+   "filas": 3681,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-20 00:00:00",
+   "segundos": 7.6,
+   "metodo": "vecino_mar",
+   "distancia_km": 9.3,
+   "celda": [
+    -37.0,
+    -73.25
+   ],
+   "dataset": "cmems_mod_glo_wav_anfc_0.083deg_PT3H-i"
+  },
+  "ecmwf_wam": {
+   "ok": true,
+   "filas_nuevas": 384,
+   "filas": 11064,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-20 23:00:00",
+   "segundos": 0.7,
+   "metodo": "servidor",
+   "celda": [
+    -37.0,
+    -73.25
+   ],
+   "dataset": "Open-Meteo ecmwf_wam025",
+   "distancia_km": 9.3
+  },
+  "gfswave": {
+   "ok": true,
+   "filas_nuevas": 384,
+   "filas": 11064,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-20 23:00:00",
+   "segundos": 0.6,
+   "metodo": "servidor",
+   "celda": [
+    -37.0,
+    -73.25
+   ],
+   "dataset": "Open-Meteo ncep_gfswave025",
+   "distancia_km": 9.3
+  },
+  "gwam": {
+   "ok": true,
+   "filas_nuevas": 297,
+   "filas": 10977,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-17 08:00:00",
+   "segundos": 0.6,
+   "metodo": "servidor",
+   "celda": [
+    -37.0,
+    -73.25
+   ],
+   "dataset": "Open-Meteo dwd_gwam",
+   "distancia_km": 9.3
+  },
+  "rtofs": {
+   "ok": true,
+   "filas_nuevas": 52,
+   "filas": 164,
+   "desde": "2026-09-21 03:00:00",
+   "hasta": "2026-10-14 00:00:00",
+   "segundos": 93.0,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.0342,
+    -73.2
+   ],
+   "dataset": "rtofs_glo_2ds_*_diag.nc (barotrópica)",
+   "corrida": "2026-10-09 00z"
+  },
+  "espc": {
+   "ok": true,
+   "filas_nuevas": 113,
+   "filas": 161,
+   "desde": "2026-09-25 12:00:00",
+   "hasta": "2026-10-15 12:00:00",
+   "segundos": 90.7,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.04,
+    -73.2
+   ],
+   "dataset": "FMRC_ESPC-D-V02_uv3z (best)",
+   "corrida": "2026-10-07 12:00:00"
+  },
+  "glo12": {
+   "ok": true,
+   "filas_nuevas": 344,
+   "filas": 11040,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-19 23:00:00",
+   "segundos": 9.5,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.0,
+    -73.1667
+   ],
+   "dataset": "cmems_mod_glo_phy_anfc_0.083deg_PT1H-m"
+  },
+  "glo12_total": {
+   "ok": true,
+   "filas_nuevas": 344,
+   "filas": 11040,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-19 23:00:00",
+   "segundos": 7.0,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.0,
+    -73.1667
+   ],
+   "dataset": "cmems_mod_glo_phy_anfc_merged-uv_PT1H-i"
+  }
+ },
+ "boya": {
+  "lecturas": 20873,
+  "horas": 10442,
+  "anulados_qc": {
+   "hs": 0,
+   "tp": 0,
+   "tm": 0,
+   "dp": 0,
+   "dm": 0,
+   "rapidez": 514,
+   "rumbo": 0,
+   "viento": 0,
+   "viento_dir": 0,
+   "rafaga": 0
+  },
+  "ultimo": "2026-10-10 22:30:00",
+  "posicion": {
+   "lat": -37.03495,
+   "lon": -73.1548,
+   "timestamp": "2026-10-10 22:10:00"
+  },
+  "actualizado": "2026-10-10 22:29:16.566612"
+ }
+}

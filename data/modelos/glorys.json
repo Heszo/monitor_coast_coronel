@@ -1,0 +1,10 @@
+{
+ "metodo": "vecino_mar",
+ "distancia_km": 4.0,
+ "celda": [
+  -37.0,
+  -73.1667
+ ],
+ "dataset": "cmems_mod_glo_phy_my_0.083deg_P1D-m",
+ "actualizado": "2026-10-10 15:37:50.977378"
+}
