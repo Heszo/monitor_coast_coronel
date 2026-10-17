@@ -1,0 +1,153 @@
+{
+ "modelos": {
+  "glorys": {
+   "ok": true,
+   "filas_nuevas": 3,
+   "filas": 405,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-08-25 00:00:00",
+   "segundos": 5.4,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.0,
+    -73.1667
+   ],
+   "dataset": "cmems_mod_glo_phy_my_0.083deg_P1D-m"
+  },
+  "mfwam": {
+   "ok": true,
+   "filas_nuevas": 117,
+   "filas": 3737,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-27 00:00:00",
+   "segundos": 5.8,
+   "metodo": "vecino_mar",
+   "distancia_km": 9.3,
+   "celda": [
+    -37.0,
+    -73.25
+   ],
+   "dataset": "cmems_mod_glo_wav_anfc_0.083deg_PT3H-i"
+  },
+  "ecmwf_wam": {
+   "ok": true,
+   "filas_nuevas": 384,
+   "filas": 11232,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-27 23:00:00",
+   "segundos": 0.5,
+   "metodo": "servidor",
+   "celda": [
+    -37.0,
+    -73.25
+   ],
+   "dataset": "Open-Meteo ecmwf_wam025",
+   "distancia_km": 9.3
+  },
+  "gfswave": {
+   "ok": true,
+   "filas_nuevas": 384,
+   "filas": 11232,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-27 23:00:00",
+   "segundos": 0.5,
+   "metodo": "servidor",
+   "celda": [
+    -37.0,
+    -73.25
+   ],
+   "dataset": "Open-Meteo ncep_gfswave025",
+   "distancia_km": 9.3
+  },
+  "gwam": {
+   "ok": true,
+   "filas_nuevas": 297,
+   "filas": 11145,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-24 08:00:00",
+   "segundos": 0.5,
+   "metodo": "servidor",
+   "celda": [
+    -37.0,
+    -73.25
+   ],
+   "dataset": "Open-Meteo dwd_gwam",
+   "distancia_km": 9.3
+  },
+  "rtofs": {
+   "ok": true,
+   "filas_nuevas": 52,
+   "filas": 220,
+   "desde": "2026-09-21 03:00:00",
+   "hasta": "2026-10-21 00:00:00",
+   "segundos": 81.0,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.0342,
+    -73.2
+   ],
+   "dataset": "rtofs_glo_2ds_*_diag.nc (barotrópica)",
+   "corrida": "2026-10-16 00z"
+  },
+  "espc": {
+   "ok": false,
+   "error": "ReadTimeout: HTTPSConnectionPool(host='ncss.hycom.org', port=443): Read timed out. (read timeout=240)",
+   "segundos": 240.4
+  },
+  "glo12": {
+   "ok": true,
+   "filas_nuevas": 346,
+   "filas": 11208,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-26 23:00:00",
+   "segundos": 7.1,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.0,
+    -73.1667
+   ],
+   "dataset": "cmems_mod_glo_phy_anfc_0.083deg_PT1H-m"
+  },
+  "glo12_total": {
+   "ok": true,
+   "filas_nuevas": 346,
+   "filas": 11208,
+   "desde": "2025-07-17 00:00:00",
+   "hasta": "2026-10-26 23:00:00",
+   "segundos": 5.2,
+   "metodo": "vecino_mar",
+   "distancia_km": 4.0,
+   "celda": [
+    -37.0,
+    -73.1667
+   ],
+   "dataset": "cmems_mod_glo_phy_anfc_merged-uv_PT1H-i"
+  }
+ },
+ "boya": {
+  "lecturas": 21191,
+  "horas": 10601,
+  "anulados_qc": {
+   "hs": 0,
+   "tp": 0,
+   "tm": 0,
+   "dp": 0,
+   "dm": 0,
+   "rapidez": 515,
+   "rumbo": 0,
+   "viento": 0,
+   "viento_dir": 0,
+   "rafaga": 0
+  },
+  "ultimo": "2026-10-17 13:30:00",
+  "posicion": {
+   "lat": -37.0351333,
+   "lon": -73.15495,
+   "timestamp": "2026-10-14 18:10:00"
+  },
+  "actualizado": "2026-10-17 13:42:46.556947"
+ }
+}
