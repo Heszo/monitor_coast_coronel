@@ -1,0 +1,11 @@
+{
+ "metodo": "vecino_mar",
+ "distancia_km": 4.0,
+ "celda": [
+  -37.04,
+  -73.2
+ ],
+ "dataset": "FMRC_ESPC-D-V02_uv3z (best)",
+ "corrida": "2026-11-15 12:00:00",
+ "actualizado": "2026-11-21 16:57:04.356509"
+}
